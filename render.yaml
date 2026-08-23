@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: sesodigital-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: FIREBASE_SERVICE_ACCOUNT_PATH
+        sync: false
+      - key: FIREBASE_STORAGE_BUCKET
+        sync: false
+      - key: GOOGLE_WEB_CLIENT_ID
+        sync: false
