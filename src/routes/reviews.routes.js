@@ -1,12 +1,12 @@
 const express = require("express");
 const { requireGoogleAuth } = require("../middleware/auth");
 const { asyncHandler } = require("../middleware/asyncHandler");
-const { getProfile, updateProfile } = require("../controllers/profile.controller");
+const { listReviews, replyToReview } = require("../controllers/reviews.controller");
 
 const router = express.Router();
 
 router.use(requireGoogleAuth);
-router.get("/", asyncHandler(getProfile));
-router.put("/", asyncHandler(updateProfile));
+router.get("/", asyncHandler(listReviews));
+router.post("/:id/reply", asyncHandler(replyToReview));
 
 module.exports = router;
