@@ -8,6 +8,7 @@ const postsRoutes = require("./routes/posts.routes");
 const photosRoutes = require("./routes/photos.routes");
 const productsRoutes = require("./routes/products.routes");
 const servicesRoutes = require("./routes/services.routes");
+const auditRoutes = require("./routes/audit.routes");
 
 const app = express();
 app.use(cors());
@@ -21,6 +22,7 @@ app.use("/api/posts", postsRoutes);
 app.use("/api/photos", photosRoutes);
 app.use("/api/products", productsRoutes);
 app.use("/api/services", servicesRoutes);
+app.use("/api/audit-requests", auditRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);
