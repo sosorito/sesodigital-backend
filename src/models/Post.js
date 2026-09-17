@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const postSchema = new mongoose.Schema(
   {
     ownerGoogleId: { type: String, required: true, index: true },
+    googlePostName: { type: String, default: "" },
     type: { type: String, enum: ["UPDATE", "OFFER", "EVENT"], required: true },
     text: { type: String, required: true },
     imageUrl: { type: String, default: null },

@@ -1,4 +1,6 @@
 const BusinessProfile = require("../models/BusinessProfile");
+const { listAccounts, listLocations, getLocation } = require("../config/googleBusinessApi");
+const { mapGoogleLocationToProfile } = require("../config/googleMappers");
 
 /** GET /api/profile — the signed-in user's business profile. Creates a blank one on first access. */
 async function getProfile(req, res) {
@@ -25,4 +27,33 @@ async function updateProfile(req, res) {
   res.json(profile);
 }
 
-module.exports = { getProfile, updateProfile };
+/** POST /api/profile/sync — pull the real Business Profile from Google and store it. */
+async function syncProfile(req, res) {
+  const accessToken = req.googleAccessToken;
+  let profile = await BusinessProfile.findOne({ ownerGoogleId: req.user.googleId });
+
+  let location;
+  if (profile?.googleLocationName) {
+    location = await getLocation(accessToken, profile.googleLocationName);
+  } else {
+    const accounts = await listAccounts(accessToken);
+    if (accounts.length === 0) {
+      return res.status(404).json({ error: "No Google Business Profile account found for this user." });
+    }
+    const locations = await listLocations(accessToken, accounts[0].name);
+    if (locations.length === 0) {
+      return res.status(404).json({ error: "No Business Profile locations found for this account." });
+    }
+    location = locations[0];
+  }
+
+  const mapped = mapGoogleLocationToProfile(location);
+  profile = await BusinessProfile.findOneAndUpdate(
+    { ownerGoogleId: req.user.googleId },
+    { $set: mapped },
+    { new: true, upsert: true, runValidators: true }
+  );
+  res.json(profile);
+}
+
+module.exports = { getProfile, updateProfile, syncProfile };

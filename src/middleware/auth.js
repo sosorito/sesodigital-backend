@@ -31,4 +31,20 @@ async function requireGoogleAuth(req, res, next) {
   }
 }
 
-module.exports = { requireGoogleAuth };
+/** Requires the `X-Google-Access-Token` header (a business.manage-scoped OAuth access token) for routes that must call Google's Business Profile APIs. */
+function requireGoogleAccessToken(req, res, next) {
+  const token = req.headers["x-google-access-token"];
+  if (!token) {
+    return res.status(400).json({ error: "Missing X-Google-Access-Token header." });
+  }
+  req.googleAccessToken = token;
+  next();
+}
+
+/** Attaches the Google access token if present, without failing when it's absent (best-effort Google sync). */
+function attachGoogleAccessToken(req, res, next) {
+  req.googleAccessToken = req.headers["x-google-access-token"] || null;
+  next();
+}
+
+module.exports = { requireGoogleAuth, requireGoogleAccessToken, attachGoogleAccessToken };

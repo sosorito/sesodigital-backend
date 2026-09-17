@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const reviewSchema = new mongoose.Schema(
   {
     ownerGoogleId: { type: String, required: true, index: true },
+    googleReviewName: { type: String, default: "", index: true },
     reviewerName: { type: String, required: true },
     reviewerInitial: { type: String, default: "" },
     rating: { type: Number, required: true, min: 1, max: 5 },

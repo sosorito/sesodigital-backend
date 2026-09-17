@@ -22,6 +22,8 @@ const specialHoursSchema = new mongoose.Schema(
 const businessProfileSchema = new mongoose.Schema(
   {
     ownerGoogleId: { type: String, required: true, index: true, unique: true },
+    googleAccountName: { type: String, default: "" },
+    googleLocationName: { type: String, default: "" },
     name: { type: String, required: true },
     category: { type: String, default: "" },
     additionalCategories: { type: [String], default: [] },

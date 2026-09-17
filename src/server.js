@@ -10,6 +10,8 @@ const productsRoutes = require("./routes/products.routes");
 const servicesRoutes = require("./routes/services.routes");
 const auditRoutes = require("./routes/audit.routes");
 const uploadsRoutes = require("./routes/uploads.routes");
+const performanceRoutes = require("./routes/performance.routes");
+const keywordsRoutes = require("./routes/keywords.routes");
 
 const app = express();
 app.use(cors());
@@ -25,6 +27,8 @@ app.use("/api/products", productsRoutes);
 app.use("/api/services", servicesRoutes);
 app.use("/api/audit-requests", auditRoutes);
 app.use("/api/uploads", uploadsRoutes);
+app.use("/api/performance", performanceRoutes);
+app.use("/api/keywords", keywordsRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);
