@@ -1,6 +1,11 @@
 const { OAuth2Client } = require("google-auth-library");
 
-const client = new OAuth2Client(process.env.GOOGLE_WEB_CLIENT_ID);
+const clientId = process.env.GOOGLE_WEB_CLIENT_ID;
+console.log(
+  "GOOGLE_WEB_CLIENT_ID at startup:",
+  clientId ? `${clientId.slice(0, 8)}...${clientId.slice(-20)}` : "NOT SET"
+);
+const client = new OAuth2Client(clientId);
 
 /**
  * Verifies the Google ID token the Android app sends as `Authorization: Bearer <idToken>`
@@ -16,7 +21,7 @@ async function requireGoogleAuth(req, res, next) {
   try {
     const ticket = await client.verifyIdToken({
       idToken,
-      audience: process.env.GOOGLE_WEB_CLIENT_ID,
+      audience: clientId,
     });
     const payload = ticket.getPayload();
     req.user = {
@@ -27,7 +32,8 @@ async function requireGoogleAuth(req, res, next) {
     };
     next();
   } catch (err) {
-    res.status(401).json({ error: "Invalid or expired Google ID token." });
+    console.error("requireGoogleAuth: token verification failed:", err.message);
+    res.status(401).json({ error: `Invalid or expired Google ID token: ${err.message}` });
   }
 }
 
